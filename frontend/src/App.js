@@ -1,20 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 
-class App extends Component {
+class App extends React.Component {
     // Initialize state
     state = { passwords: [] }
 
     // Fetch passwords after first mount
     componentDidMount() {
-        this.getPasswords();
-    }
-
-    getPasswords = () => {
-        // Get the passwords and store them in state
-        fetch('/api/passwords')
-            .then(res => res.json())
-            .then(passwords => this.setState({ passwords }));
     }
 
     render() {
