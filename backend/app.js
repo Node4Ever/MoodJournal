@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const jwt = require('express-jwt');
+const db = require("./models");
 
 // Store JWT in httpOnly + Secure cookies.
 const cookieParser = require('cookie-parser');
@@ -8,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(express.json());
 app.use(cookieParser());
 
 // Serve static files from the React app
@@ -18,7 +20,13 @@ app.get('/api', (req, response) => {
     response.send('Hello World!')
 });
 
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', (request, response) => {
+    const user = db.user.create({
+        email: request.body.email,
+        password: request.body.password,
+    }).then(user => user.id);
+
+    return user;
 });
 
 app.post('/api/auth/login', (request, response) => {
@@ -70,22 +78,36 @@ app.get('*', (request, response) => {
     response.sendFile(path.join(__dirname + '/../frontend/build/index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Example app listening at http://localhost:${PORT}`)
-});
-
 // Initialize the Sequelize ORM
-const db = require("./models");
 db.init();
-db.sequelize.sync();
 
 async function getAll(req, res) {
-    const users = await db.user.findAll();
+    const users = await db.User.findAll();
     //res.status(200).json(users);
 
     return users;
-};
+}
 
-getAll().then(users => {
-    console.log(users);
+function getRandomInt(max)
+{
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+// register().then(userId => {
+//     console.log(`New user ID: ${userId}`);
+
+
+// });
+
+db.sequelize.sync({ force: true }).then(() => {
+    // Ensure that the database is being listened to before we start listening for HTTP requests.
+    app.listen(PORT, () => {
+        console.log(`Example app listening at http://localhost:${PORT}`)
+    });
+
+    getAll().then(users => {
+        console.log(users);
+    });
 });
+
+
