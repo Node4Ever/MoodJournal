@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Node4Ever/MoodJournal/issues"
   },
-  "homepage": "https://github.com/Node4Ever/MoodJournal#readme"
+  "homepage": "https://github.com/Node4Ever/MoodJournal#readme",
+  "dependencies": {
+    "mysql2": "^2.2.5"
+  }
 }
