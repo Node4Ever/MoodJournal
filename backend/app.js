@@ -3,7 +3,8 @@ const path = require('path');
 const jwt = require('express-jwt');
 const db = require("./models");
 
-// Store JWT in httpOnly + Secure cookies.
+
+// @todo: Store JWT in httpOnly + Secure cookies.
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -15,19 +16,25 @@ app.use(cookieParser());
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname + '/../', 'frontend/build')));
 
+// Load Express Controllers
+const validation = require('./middleware/validation');
+const userController = require('./controllers/User');
+
 // Put all API endpoints under '/api'
 app.get('/api', (req, response) => {
     response.send('Hello World!')
 });
 
-app.post('/api/auth/register', (request, response) => {
-    const user = db.user.create({
-        email: request.body.email,
-        password: request.body.password,
-    }).then(user => user.id);
+// app.post('/api/auth/register', (request, response) => {
+//     const user = db.user.create({
+//         email: request.body.email,
+//         password: request.body.password,
+//     }).then(user => user.id);
+//
+//     return user;
+// });
 
-    return user;
-});
+app.post('/api/auth/register', validation.register, userController.register);
 
 app.post('/api/auth/login', (request, response) => {
     response.cookie('jwtToken', 'cookieValue', {

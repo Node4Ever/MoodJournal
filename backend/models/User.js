@@ -1,29 +1,27 @@
-// Import the encryption module
-const bcrypt = require("bcrypt");
-const { Sequelize } = require('sequelize');
-const AuthToken = require('./AuthToken');
+const bcrypt = require('bcrypt');
 
-// class User extends Model {}
-
-const User = (sequelize) => {
-    const {INTEGER, STRING} = Sequelize;
-    const model = sequelize.define('User', {
-        id: {type: INTEGER, primaryKey: true, autoIncrement: true},
-        email: {type: STRING, primaryKey: true, unique: true, allowNull: false},
-        password: {type: STRING, allowNull: false},
-        resetToken: {type: STRING, allowNull: true}
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define('User', {
+        email: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     }, {tableName: 'users', underscored: true});
 
-    return model;
-}
+    // Add the foreign key.
+    User.associate = function ({AuthToken}) {
+        User.hasMany(AuthToken);
+    };
 
-User.associate = function(models) {
-  User.hasMany(models.AuthToken, {
-    foreignKey: 'id',
-    targetId: 'user_id',
-    onDelete: 'CASCADE'
-  });
+    User.prototype.logout = async function (token) {
+        // destroy the auth token record that matches the passed token
+        sequelize.models.AuthToken.destroy({ where: { token } });
+    };
+
+  return User;
 };
-
-
-module.exports = User;

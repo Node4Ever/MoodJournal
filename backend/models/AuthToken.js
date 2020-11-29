@@ -1,53 +1,38 @@
-// Import the encryption module
-const bcrypt = require("bcrypt");
+module.exports = (sequelize, DataTypes) => {
 
-const { Sequelize } = require('sequelize');
-
-// class User extends Model {}
-
-const AuthToken = (sequelize) => {
-    const {STRING, INTEGER} = Sequelize;
-    const model = sequelize.define('AuthToken', {
-        token: {type: STRING},
-        userId: {type: INTEGER, field: 'user_id'}
+    const AuthToken = sequelize.define('AuthToken', {
+        token: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
     }, {tableName: 'auth_tokens', underscored: true});
 
-    return model;
-};
+    // set up the associations so we can make queries that include
+    // the related objects
+    AuthToken.associate = function({ User }) {
+        AuthToken.belongsTo(User);
+    };
 
-// AuthToken.associate = function(models) {
-//     AuthToken.belongsTo(models.User);
-// };
+    // generates a random 15 character token and
+    // associates it with a user
+    AuthToken.generate = async function(UserId) {
+        if (!UserId) {
+            throw new Error('AuthToken requires a user ID')
+        }
 
+        let token = '';
 
-// generates a random 15 character token and
-// associates it with a user
-// From https://medium.com/@jgrisafe/custom-user-authentication-with-express-sequelize-and-bcrypt-667c4c0edef5z
-AuthToken.generate = async function(UserId) {
-    if (!UserId) {
-        throw new Error('AuthToken requires a user ID')
+        const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+            'abcdefghijklmnopqrstuvwxyz0123456789';
+
+        for (var i = 0; i < 15; i++) {
+            token += possibleCharacters.charAt(
+                Math.floor(Math.random() * possibleCharacters.length)
+            );
+        }
+
+        return AuthToken.create({ token, UserId })
     }
 
-    let token = '';
-
-    const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-        'abcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (var i = 0; i < 15; i++) {
-        token += possibleCharacters.charAt(
-            Math.floor(Math.random() * possibleCharacters.length)
-        );
-    }
-
-    return AuthToken.create({ token, UserId })
-}
-
-AuthToken.associate = (models) => {
-  AuthToken.belongsTo(models.User, {
-    foreignKey: 'user_id',
-    targetKey: 'id',
-    onDelete: 'CASCADE'
-  });
+    return AuthToken;
 };
-
-module.exports = AuthToken;
