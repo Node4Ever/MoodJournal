@@ -6,7 +6,7 @@ import Auth from '../../modules/Auth';
 import ValidationError from "../ValidationError";
 
 // Taken from https://closebrace.com/tutorials/2017-10-12/five-minute-react-60-reset-password-part-1
-class LoginPage extends React.Component {
+class RegisterPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -14,6 +14,7 @@ class LoginPage extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
         this.handleValidSubmit = this.handleValidSubmit.bind(this);
 
         // component state
@@ -39,19 +40,34 @@ class LoginPage extends React.Component {
         this.setState({ password: e.target.value });
     }
 
+    handleConfirmPasswordChange(e) {
+        this.setState({ confirmPassword: e.target.value });
+    }
+
     // Handle submission once all form data is valid
     handleValidSubmit() {
         const { login } = this.props;
         const formData = this.state;
-        this.login(formData.email, formData.password);
+        this.register(formData.email, formData.password, formData.confirmPassword);
     }
 
-    login(email, password) {
-        fetch('/api/auth/login', {
+    register(email, password, confirmPassword) {
+        if (password !== confirmPassword) {
+            this.setState({errors: {
+                    message: 'Error',
+                    details: 'Your passwords do not match.'
+                }
+            });
+
+            return;
+        }
+
+        fetch('/api/auth/register', {
             method: 'POST',
             body: JSON.stringify({
                 email,
-                password
+                password,
+                password_confirmation: confirmPassword
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -62,8 +78,7 @@ class LoginPage extends React.Component {
                     throw data;
                 }
 
-                Auth.authenticateUser(data.authToken.token, data.authToken.expiresAt);
-                window.location.href = '/';
+                window.location.href = '/login';
             })
             .catch(error => {
                 console.log(error)
@@ -82,7 +97,7 @@ class LoginPage extends React.Component {
             <div className="row justify-content-center">
                 <div className="col-10 col-sm-7 col-md-6 col-lg-6">
                     <p>
-                        Please enter your email address and password.
+                        Please enter your information to register.
                     </p>
                     <AvForm onValidSubmit={this.handleValidSubmit}>
                         <AvGroup>
@@ -105,14 +120,26 @@ class LoginPage extends React.Component {
                                 name="password"
                                 onChange={this.handlePasswordChange}
                                 onKeyPress={this.handleKeyPress}
-                                placeholder="you@example.com"
+                                placeholder="Password"
                                 required
                                 type="password"
-                                value="1!"
                             />
                             <AvFeedback>A valid email is required to log in.</AvFeedback>
                         </AvGroup>
-                        <Button color="primary">Log in</Button>
+                        <AvGroup>
+                            <Label for="confirmPassword">Confirm Password</Label>
+                            <AvInput
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                onChange={this.handleConfirmPasswordChange}
+                                onKeyPress={this.handleKeyPress}
+                                placeholder="Password"
+                                required
+                                type="password"
+                            />
+                            <AvFeedback>A valid email is required to log in.</AvFeedback>
+                        </AvGroup>
+                        <Button color="primary">Register</Button>
                         { this.state.errors &&
                         <div className="alert alert-danger" role="alert">
                             <h4>{this.state.errors.message}</h4>
@@ -122,9 +149,6 @@ class LoginPage extends React.Component {
                         </div>
                         }
                     </AvForm>
-                    <nav>
-                        <a href="/">Home</a> | <a href="/forgot-password">Forgot Password</a>
-                    </nav>
                 </div>
             </div>
         </section>
@@ -132,4 +156,4 @@ class LoginPage extends React.Component {
     }
 }
 
-export default LoginPage;
+export default RegisterPage;

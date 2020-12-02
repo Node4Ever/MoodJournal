@@ -11,7 +11,9 @@ function AuthAction()
         return <a href="/logout">Log out</a>;
     }
 
-    return <a href="/login">Log in</a>;
+    return <span>
+        <a href="/login">Log in</a> | <a href="/register">Register</a>
+    </span>;
 }
 
 class App extends React.Component {

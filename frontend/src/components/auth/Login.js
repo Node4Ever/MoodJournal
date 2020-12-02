@@ -105,10 +105,9 @@ class LoginPage extends React.Component {
                                 name="password"
                                 onChange={this.handlePasswordChange}
                                 onKeyPress={this.handleKeyPress}
-                                placeholder="you@example.com"
+                                placeholder="Password"
                                 required
                                 type="password"
-                                value="1!"
                             />
                             <AvFeedback>A valid email is required to log in.</AvFeedback>
                         </AvGroup>

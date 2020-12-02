@@ -8,7 +8,9 @@ exports.register = (request, response, next) => {
         email: request.body.email,
         password: hash,
     })
-        .then(user => response.json(user))
+        .then(user => {
+            response.json({user, success: true});
+        })
         .catch(next);
 };
 
