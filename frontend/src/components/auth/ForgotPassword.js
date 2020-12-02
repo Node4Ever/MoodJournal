@@ -39,6 +39,7 @@ class ForgotPasswordPage extends React.Component {
 
     render() {
         return (
+        <section id="page">
             <div className="row justify-content-center">
                 <div className="col-10 col-sm-7 col-md-5 col-lg-4">
                     <p>
@@ -64,6 +65,7 @@ class ForgotPasswordPage extends React.Component {
                     </AvForm>
                 </div>
             </div>
+        </section>
         );
     }
 }

@@ -5,11 +5,15 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import ForgotPasswordPage from './components/auth/ForgotPassword';
+import LoginPage from './components/auth/Login';
+import LogoutPage from "./components/auth/Logout";
 
 ReactDOM.render((
     <BrowserRouter>
         <Route path = "/" component = {App}/>
         <Route path = "/forgot-password" component = {ForgotPasswordPage} />
+        <Route path = "/login" component = {LoginPage} />
+        <Route path = "/logout" component = {LogoutPage} />
         {/*<Route path = "home" component = {Home} />*/}
         {/*<Route path = "about" component = {About} />*/}
         {/*<Route path = "contact" component = {Contact} />*/}
