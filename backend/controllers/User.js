@@ -1,4 +1,4 @@
-const { AuthToken, User } = require('../models');
+const { User } = require('../models');
 
 exports.register = (request, response, next) => {
     const hash = User.generateHash(request.body.password);
@@ -29,15 +29,9 @@ exports.logout = async (request, response, next) => {
     const authHeader = request.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    console.log(token);
+    console.log('Logging out: ' + token);
 
     try {
-        AuthToken.destroy({
-            where: {
-                token
-            }
-        });
-
         response.json({
             status: true
         });
