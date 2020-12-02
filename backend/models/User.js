@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         // create a new auth token associated to 'this' user
         // by calling the AuthToken class method we created earlier
         // and passing it the user id
-        const authToken = await AuthToken.generate(this.id);
+        const authToken = await AuthToken.generate(this.id, this.email);
         await user.addAuthToken(authToken);
 
         return {user, authToken}

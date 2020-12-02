@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 module.exports = (sequelize, DataTypes) => {
 
     const AuthToken = sequelize.define('AuthToken', {
@@ -12,23 +14,21 @@ module.exports = (sequelize, DataTypes) => {
 
     // generates a random 15 character token and
     // associates it with a user
-    AuthToken.generate = async function(UserId) {
-        if (!UserId) {
+    AuthToken.generate = async function(userId, email) {
+        if (!userId) {
             throw new Error('AuthToken requires a user ID')
         }
 
-        let token = '';
+        const token = jwt.sign({ sub: email }, process.env.JWT_SECRET, {
+            expiresIn: parseInt(process.env.JWT_TTL) * 60
+        });
 
-        const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-            'abcdefghijklmnopqrstuvwxyz0123456789';
+        AuthToken.create({ token, userId });
 
-        for (var i = 0; i < 15; i++) {
-            token += possibleCharacters.charAt(
-                Math.floor(Math.random() * possibleCharacters.length)
-            );
-        }
-
-        return AuthToken.create({ token, UserId })
+        return {
+            token: token,
+            createdAt: (new Date()).toISOString()
+        };
     }
 
     return AuthToken;

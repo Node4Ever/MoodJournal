@@ -20,7 +20,7 @@ exports.login = async (request, response, next) => {
     } catch (error) {
         return response.status(401).send({
             success: false,
-            error: 'Invalid username or password'
+            error: error
         });
     }
 };

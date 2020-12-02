@@ -21,6 +21,13 @@ app.use(express.static(path.join(__dirname + '/../', 'frontend/build')));
 const validation = require('./middleware/validation');
 const userController = require('./controllers/User');
 
+// Configuration sanity checks:
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'CHANGE THIS RIGHT NOW!!!!') {
+    throw new Error('You *must* change the JWT_SECRET in the .env/environment variable!');
+} else if (process.env.JWT_SECRET.length < 15) {
+    throw new Error('The JWT_SECRET *must* be at least 15 characters or more, for security reasons.');
+}
+
 // Put all API endpoints under '/api'
 app.get('/api', (req, response) => {
     response.send('Hello World!')
