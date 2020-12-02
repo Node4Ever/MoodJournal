@@ -19,6 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     //     User.hasMany(AuthToken);
     // };
 
+    User.prototype.toJSON = function () {
+        var values = Object.assign({}, this.get());
+
+        delete values.password;
+        return values;
+    };
+
     User.authenticate = async function (email, password) {
         const user = await User.findOne({where: {email}});
 
@@ -36,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
 
         return {user, authToken}
     };
-    
+
 
     User.generateHash = function (password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
