@@ -3,6 +3,7 @@ const path = require('path');
 const jwt = require('express-jwt');
 const db = require("./models");
 
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 // @todo: Store JWT in httpOnly + Secure cookies.
 const cookieParser = require('cookie-parser');
