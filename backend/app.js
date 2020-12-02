@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
-const jwt = require('express-jwt');
 const db = require("./models");
 
 // @todo: Store JWT in httpOnly + Secure cookies.
@@ -19,6 +18,8 @@ app.use(express.static(path.join(__dirname + '/../', 'frontend/build')));
 
 // Load Express Controllers
 const validation = require('./middleware/validation');
+// Use our own JWT setup.
+const myJWT = require('./middleware/myJWT');
 const userController = require('./controllers/User');
 
 // Configuration sanity checks:
@@ -67,21 +68,22 @@ app.get('/api/auth/token', (request, response) => {
     });
 });
 
-app.post('/api/auth/token/:email', (req, res) => {
+// @todo: Create and email a password reset (JWT) token.
+app.post('/api/auth/token/:email', (request, response) => {
 });
 
-app.patch('/api/auth/user/:userId', (req, res) => {
-
-});
-
-// Refresh JWT Token
-app.get('/api/auth/jwt', (req, res) => {
+// @todo: Update user account and/or reset password.
+app.patch('/api/auth/user/:userId', (request, response) => {
 
 });
 
-app.get('/api/auth/logout', (req, res) => {
+// @todo: Refresh JWT Token
+app.get('/api/auth/jwt', (request, response) => {
 
 });
+
+// AKA: Log out.
+app.delete('/api/auth/login', myJWT.authenticate, userController.logout);
 
 // Google SSO
 app.patch('/api/auth/google', (req, res) => {

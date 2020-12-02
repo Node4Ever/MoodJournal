@@ -1,4 +1,4 @@
-const User = require('../models').User;
+const { AuthToken, User } = require('../models');
 
 exports.register = (request, response, next) => {
     const hash = User.generateHash(request.body.password);
@@ -21,6 +21,30 @@ exports.login = async (request, response, next) => {
         return response.status(401).send({
             success: false,
             error: error
+        });
+    }
+};
+
+exports.logout = async (request, response, next) => {
+    const authHeader = request.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    console.log(token);
+
+    try {
+        AuthToken.destroy({
+            where: {
+                token
+            }
+        });
+
+        response.json({
+            status: true
+        });
+    } catch (error) {
+        response.status(400).json({
+            status: false,
+            error
         });
     }
 };
