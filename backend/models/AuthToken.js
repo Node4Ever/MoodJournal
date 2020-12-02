@@ -1,16 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
 
     const AuthToken = sequelize.define('AuthToken', {
-        token: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        }
+        token: { type: DataTypes.STRING, allowNull: false }
     }, {tableName: 'auth_tokens', underscored: true});
 
     // set up the associations so we can make queries that include
     // the related objects
     AuthToken.associate = function({ User }) {
-        AuthToken.belongsTo(User);
+        AuthToken.belongsTo(User, { onDelete: 'cascade' });
     };
 
     // generates a random 15 character token and

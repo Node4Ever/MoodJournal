@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
     User.prototype.authorize = async function () {
         const {AuthToken} = sequelize.models;
-        const user = this
+        const user = this;
 
         // create a new auth token associated to 'this' user
         // by calling the AuthToken class method we created earlier
