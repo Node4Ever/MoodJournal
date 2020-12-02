@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname + '/../', 'frontend/build')));
 const validation = require('./middleware/validation');
 // Use our own JWT setup.
 const myJWT = require('./middleware/myJWT');
+const journalController = require('./controllers/Journal');
 const userController = require('./controllers/User');
 
 // Configuration sanity checks:
@@ -85,10 +86,14 @@ app.get('/api/auth/jwt', (request, response) => {
 // AKA: Log out.
 app.delete('/api/auth/login', myJWT.authenticate, userController.logout);
 
-// Google SSO
+// @todo: Google SSO
 app.patch('/api/auth/google', (req, res) => {
 
 });
+
+// Journal routes
+// List all of the journal entries of the logged-in user.
+app.get('/api/journal', myJWT.authenticate, journalController.list);
 
 
 // The "catchall" handler: for any request that doesn't

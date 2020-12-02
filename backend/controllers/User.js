@@ -32,6 +32,7 @@ exports.logout = async (request, response, next) => {
     console.log('Logging out: ' + token);
 
     try {
+        console.log(request.user);
         response.json({
             status: true
         });

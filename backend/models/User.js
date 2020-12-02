@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {tableName: 'users', underscored: true});
 
-    // Add the foreign key.
-    // User.associate = function ({AuthToken}) {
-    //     User.hasMany(AuthToken);
-    // };
+    // Add the foreign key(s).
+    User.associate = function ({JournalEntry}) {
+        User.hasMany(JournalEntry);
+    };
 
     User.prototype.toJSON = function () {
         var values = Object.assign({}, this.get());
