@@ -23,5 +23,5 @@ module.exports = (sequelize, DataTypes) => {
         sequelize.models.AuthToken.destroy({ where: { token } });
     };
 
-  return User;
+    return User;
 };
