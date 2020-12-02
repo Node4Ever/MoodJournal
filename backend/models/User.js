@@ -23,5 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         sequelize.models.AuthToken.destroy({ where: { token } });
     };
 
+    User.generateHash = function (password) {
+        return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+    };
+
+    // checking if password is valid
+    User.prototype.validPassword = function (password) {
+        return bcrypt.compareSync(password, this.account_key);
+    };
+
     return User;
 };
