@@ -7,7 +7,7 @@ const validationCB = function (validationRules, request, response, next) {
                 .send({
                     success: false,
                     message: 'Validation failed',
-                    data: err
+                    errors: err.errors
                 });
         } else {
             next();

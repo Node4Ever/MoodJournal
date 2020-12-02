@@ -15,6 +15,7 @@ exports.register = (request, response, next) => {
 exports.login = async (request, response, next) => {
     try {
         const user = await User.authenticate(request.body.email, request.body.password);
+        user.success = true;
 
         response.json(user);
     } catch (error) {
