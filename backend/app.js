@@ -36,8 +36,10 @@ app.get('/api', (req, response) => {
 // });
 
 app.post('/api/auth/register', validation.register, userController.register);
+app.post('/api/auth/login', validation.login, userController.login);
 
-app.post('/api/auth/login', (request, response) => {
+
+app.post('/api/auth/loginV1', validation.login, (request, response) => {
     response.cookie('jwtToken', 'cookieValue', {
         maxAge: 60 * 60 * 1000, // 1 hour
         httpOnly: true,
@@ -96,18 +98,7 @@ async function getAll(req, res) {
     return users;
 }
 
-function getRandomInt(max)
-{
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-// register().then(userId => {
-//     console.log(`New user ID: ${userId}`);
-
-
-// });
-
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
     // Ensure that the database is being listened to before we start listening for HTTP requests.
     app.listen(PORT, () => {
         console.log(`Example app listening at http://localhost:${PORT}`)

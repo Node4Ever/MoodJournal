@@ -1,13 +1,9 @@
 const validator = require('../services/validator');
 
-const register = (req, res, next) => {
-    const validationRule = {
-        "email": "required|email|min:5",
-        "password": "required|string|min:6|confirmed"
-    }
-    validator(req.body, validationRule, {}, (err, status) => {
+const validationCB = function (validationRules, request, response, next) {
+    validator(request.body, validationRules, {}, (err, status) => {
         if (!status) {
-            res.status(412)
+            response.status(412)
                 .send({
                     success: false,
                     message: 'Validation failed',
@@ -17,8 +13,27 @@ const register = (req, res, next) => {
             next();
         }
     });
+};
+
+const register = (request, response, next) => {
+    const validationRules = {
+        "email": "required|email|min:5",
+        "password": "required|string|min:6|confirmed"
+    };
+
+    validationCB(validationRules, request, response, next);
 }
 
+const login = (request, response, next) => {
+    const validationRules = {
+        "email": "required|email",
+        "password": "required|string"
+    };
+
+    validationCB(validationRules, request, response, next);
+};
+
 module.exports = {
-    register
-}
+    register,
+    login,
+};
